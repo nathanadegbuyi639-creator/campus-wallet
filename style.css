@@ -1,0 +1,1210 @@
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #111;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+
+/* =========================
+   MAIN APP
+========================= */
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR / DASHBOARD
+========================= */
+
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: #292d32;
+    color: white;
+    padding: 28px 18px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.brand {
+    display: block;
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 45px;
+    padding-left: 12px;
+}
+
+.main-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-link {
+    padding: 13px 15px;
+    border-radius: 8px;
+    color: #d9dde1;
+    font-size: 15px;
+    transition: 0.2s ease;
+}
+
+.nav-link:hover {
+    background: #3a4149;
+    color: white;
+}
+
+/* Active page */
+body[data-page="dashboard"] .nav-link[data-nav="dashboard"],
+body[data-page="transactions"] .nav-link[data-nav="transactions"],
+body[data-page="savings"] .nav-link[data-nav="savings"],
+body[data-page="goals"] .nav-link[data-nav="goals"],
+body[data-page="analytics"] .nav-link[data-nav="analytics"],
+body[data-page="settings"] .nav-link[data-nav="settings"] {
+    background: #2563eb;
+    color: white;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    min-height: 100vh;
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+    height: 72px;
+    background: white;
+    border-bottom: 1px solid #e1e5e8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 35px;
+}
+
+.global-search {
+    width: 300px;
+    padding: 11px 15px;
+    border: 1px solid #d5d9dd;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+.global-search:focus {
+    border-color: #2563eb;
+}
+
+.current-user {
+    font-weight: bold;
+    color: #292d32;
+}
+
+
+/* =========================
+   MAIN SECTION
+========================= */
+
+main {
+    padding: 35px;
+}
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.page-head h1 {
+    font-size: 30px;
+    margin-bottom: 7px;
+    color: #111;
+}
+
+.page-head p {
+    color: #69717a;
+    font-size: 15px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+    border: none;
+    background: #2563eb;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.page-head button {
+    padding: 13px 20px;
+}
+
+
+/* =========================
+   STAT CARDS
+========================= */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e6e9;
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card > p:first-child {
+    color: #68717a;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.stat-amount {
+    font-size: 25px;
+    font-weight: bold;
+    color: #111;
+}
+
+
+/* =========================
+   TWO COLUMN SECTION
+========================= */
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 20px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e2e6e9;
+    border-radius: 12px;
+    padding: 23px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.panel h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #111;
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.panel-head h2 {
+    margin-bottom: 0;
+}
+
+.panel-head button {
+    font-size: 13px;
+    padding: 9px 13px;
+}
+
+
+/* =========================
+   LISTS
+========================= */
+
+.panel ul {
+    list-style: none;
+}
+
+.panel li {
+    padding: 14px 0;
+    border-bottom: 1px solid #edf0f2;
+    color: #42484e;
+    font-size: 14px;
+}
+
+.panel li:last-child {
+    border-bottom: none;
+}
+
+.panel > p {
+    margin-top: 15px;
+}
+
+.panel > p a {
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.panel > p a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================
+   DIALOG / POP-UP
+========================= */
+
+dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 28px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+dialog h3 {
+    font-size: 22px;
+    margin-bottom: 22px;
+    color: #292d32;
+}
+
+dialog label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+dialog input,
+dialog select {
+    width: 100%;
+    margin-top: 7px;
+    padding: 11px 12px;
+    border: 1px solid #d2d7dc;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+}
+
+dialog input:focus,
+dialog select:focus {
+    border-color: #2563eb;
+}
+
+dialog button {
+    margin-top: 10px;
+}
+
+dialog button[type="button"] {
+    background: #e5e7eb;
+    color: #222;
+}
+
+dialog button[type="button"]:hover {
+    background: #d1d5db;
+}
+
+/* =========================
+   TRANSACTIONS PAGE
+========================= */
+
+/* Filter buttons */
+.filter-row {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0 18px;
+    flex-wrap: wrap;
+}
+
+.filter-row button {
+    background: white;
+    color: #292d32;
+    border: 1px solid #d9dee3;
+    padding: 10px 17px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.filter-row button:hover {
+    background: #eaf1ff;
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+/* Active filter */
+.filter-row button.active {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+
+/* =========================
+   TRANSACTION SEARCH
+========================= */
+
+#txSearch {
+    width: 100%;
+    max-width: 450px;
+    padding: 12px 15px;
+    border: 1px solid #d5d9dd;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 22px;
+}
+
+#txSearch:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================
+   TRANSACTION TABLE
+========================= */
+
+#txPanels {
+    width: 100%;
+}
+
+#txPanels > div {
+    background: white;
+    border: 1px solid #e1e5e8;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+#txPanels table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+
+/* Table heading */
+#txPanels th {
+    background: #292d32;
+    color: white;
+    text-align: left;
+    padding: 15px 18px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* Table cells */
+#txPanels td {
+    padding: 15px 18px;
+    border-bottom: 1px solid #edf0f2;
+    color: #333;
+    font-size: 14px;
+}
+
+
+/* Remove last border */
+#txPanels tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Row hover */
+#txPanels tbody tr:hover {
+    background: #f7f9fb;
+}
+
+
+/* Delete button */
+#txPanels td button {
+    background: #eef2f5;
+    color: #292d32;
+    border: 1px solid #d8dde2;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+#txPanels td button:hover {
+    background: #292d32;
+    color: white;
+}
+
+
+/* =========================
+   TRANSACTION TYPE
+========================= */
+
+#txPanels td:nth-child(4) {
+    text-transform: capitalize;
+}
+
+
+/* =========================
+   TRANSACTION DIALOG
+========================= */
+
+#addTxDialog {
+    background: white;
+}
+
+#addTxDialog h3 {
+    color: #292d32;
+}
+
+ /* =========================
+    SAVINGS PAGE
+ ========================= */
+
+ /* Savings panels */
+ .two-col .panel {
+     min-height: 360px;
+ }
+
+ .panel small {
+     font-size: 12px;
+     color: #737b83;
+     font-weight: normal;
+ }
+
+
+ /* =========================
+    SAVINGS BALANCE
+ ========================= */
+
+ .panel > p {
+     color: #626a72;
+     font-size: 14px;
+     margin-bottom: 12px;
+ }
+
+ .panel > p strong {
+     color: #111;
+     font-size: 25px;
+ }
+
+
+ /* Lock status */
+ #generalLockStatus {
+     background: #f1f3f5;
+     border-left: 4px solid #2563eb;
+     padding: 12px;
+     border-radius: 6px;
+     color: #444;
+ }
+
+
+ /* =========================
+    SAVINGS BUTTONS
+ ========================= */
+
+ .panel > button {
+     margin: 12px 6px 25px 0;
+ }
+
+ .panel > button:nth-of-type(2) {
+     background: #292d32;
+ }
+
+ .panel > button:nth-of-type(2):hover {
+     background: #111;
+ }
+
+
+ /* =========================
+    HISTORY
+ ========================= */
+
+ .panel h3 {
+     font-size: 16px;
+     color: #292d32;
+     margin: 5px 0 10px;
+ }
+
+ .panel ul {
+     margin-top: 5px;
+ }
+
+ .panel li {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 13px 4px;
+     color: #444;
+ }
+
+
+ /* =========================
+    GENERAL & EMERGENCY
+ ========================= */
+
+ .panel:first-child {
+     border-top: 4px solid #2563eb;
+ }
+
+ .panel:last-child {
+     border-top: 4px solid #292d32;
+ }
+
+
+ /* =========================
+    ERROR MESSAGE
+ ========================= */
+
+ #generalWithdrawError,
+ #emergencyWithdrawError {
+     background: #f1f3f5;
+     border-left: 4px solid #2563eb;
+     padding: 10px;
+     border-radius: 5px;
+     color: #292d32;
+     font-size: 13px;
+     margin-bottom: 15px;
+ }
+
+
+ /* =========================
+    SAVINGS DIALOG
+ ========================= */
+
+ dialog form {
+     width: 100%;
+ }
+
+ dialog form h3 {
+     margin-bottom: 22px;
+ }
+
+ dialog form label {
+     color: #292d32;
+ }
+
+ dialog form input {
+     background: white;
+ }
+  /* =========================
+    GOALS PAGE
+ ========================= */
+
+ /* Goals container */
+ main > .panel {
+     background: white;
+     border: 1px solid #e1e5e8;
+     border-radius: 12px;
+     padding: 25px;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+ }
+
+
+ /* =========================
+    GOAL LIST
+ ========================= */
+
+ #goalList {
+     list-style: none;
+     display: grid;
+     grid-template-columns: repeat(2, 1fr);
+     gap: 18px;
+ }
+
+ #goalList > li {
+     position: relative;
+     background: #f8fafc;
+     border: 1px solid #e1e5e8;
+     border-radius: 10px;
+     padding: 20px;
+     min-height: 150px;
+ }
+
+
+ /* Goal name */
+ #goalList strong {
+     display: block;
+     font-size: 18px;
+     color: #111;
+     margin-bottom: 12px;
+ }
+
+
+ /* Goal information */
+ #goalList > li {
+     color: #626a72;
+     font-size: 14px;
+ }
+
+
+ /* =========================
+    PROGRESS BAR
+ ========================= */
+
+ #goalList > li::after {
+     content: "";
+     display: block;
+     height: 8px;
+     background: #e1e5e8;
+     border-radius: 10px;
+     margin-top: 18px;
+ }
+
+
+ /* =========================
+    GOAL BUTTONS
+ ========================= */
+
+ #goalList button {
+     padding: 8px 12px;
+     font-size: 12px;
+     margin-top: 15px;
+     margin-right: 5px;
+ }
+
+
+ /* Add money */
+ #goalList button:first-of-type {
+     background: #2563eb;
+     color: white;
+ }
+
+
+ #goalList button:first-of-type:hover {
+     background: #1d4ed8;
+ }
+
+
+ /* Delete */
+ #goalList button:last-of-type {
+     background: #e5e7eb;
+     color: #292d32;
+ }
+
+
+ #goalList button:last-of-type:hover {
+     background: #292d32;
+     color: white;
+ }
+
+
+ /* =========================
+    GOAL DIALOG
+ ========================= */
+
+ #newGoalDialog,
+ #contributeDialog {
+     background: white;
+ }
+
+
+ #newGoalDialog h3,
+ #contributeDialog h3 {
+     color: #292d32;
+ }
+
+
+ #newGoalDialog input,
+ #contributeDialog input {
+     background: white;
+ }
+ /* =========================
+   ANALYTICS PAGE
+========================= */
+
+/* Analytics panels */
+main > .two-col {
+    margin-bottom: 20px;
+}
+
+main > .panel {
+    background: white;
+    border: 1px solid #e1e5e8;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================
+   TOTALS
+========================= */
+
+.two-col .panel:first-child {
+    border-top: 4px solid #2563eb;
+}
+
+.two-col .panel:first-child p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5px;
+    margin: 0;
+    border-bottom: 1px solid #edf0f2;
+    color: #626a72;
+    font-size: 14px;
+}
+
+.two-col .panel:first-child p:last-child {
+    border-bottom: none;
+}
+
+.two-col .panel:first-child strong {
+    color: #111;
+    font-size: 16px;
+}
+
+
+/* =========================
+   SPENDING CATEGORY TABLE
+========================= */
+
+.two-col .panel:last-child {
+    border-top: 4px solid #292d32;
+}
+
+.two-col .panel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.two-col .panel th {
+    background: #292d32;
+    color: white;
+    text-align: left;
+    padding: 13px 15px;
+    font-size: 13px;
+}
+
+.two-col .panel td {
+    padding: 14px 15px;
+    border-bottom: 1px solid #edf0f2;
+    color: #444;
+    font-size: 14px;
+}
+
+.two-col .panel tbody tr:hover {
+    background: #f7f9fb;
+}
+
+.two-col .panel tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================
+   ALL TRANSACTIONS BY DATE
+========================= */
+
+main > .panel:last-child {
+    border-top: 4px solid #2563eb;
+}
+
+#byDateList {
+    list-style: none;
+}
+
+#byDateList li {
+    padding: 15px 5px;
+    border-bottom: 1px solid #edf0f2;
+    color: #444;
+    font-size: 14px;
+}
+
+#byDateList li:last-child {
+    border-bottom: none;
+}
+
+
+/* =========================
+   ANALYTICS HEADINGS
+========================= */
+
+.panel h2 {
+    color: #111;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* =========================
+   SETTINGS PAGE
+   ========================= */
+
+main > .panel {
+    background: #ffffff;
+    border: 1px solid #e1e5e8;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Panel headings */
+main > .panel h2 {
+    color: #111111;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* Profile panel */
+#profileForm {
+    max-width: 650px;
+}
+
+#profileForm label {
+    display: block;
+    color: #292d32;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* Inputs and select */
+#profileForm input,
+#profileForm select {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px 14px;
+    border: 1px solid #d9dee3;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111111;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+/* When clicking an input */
+#profileForm input:focus,
+#profileForm select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Save Profile button */
+#profileForm button {
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#profileForm button:hover {
+    background: #1d4ed8;
+}
+
+/* =========================
+   NOTIFICATIONS
+   ========================= */
+
+main > .panel:nth-of-type(2) {
+    border-top: 4px solid #2563eb;
+}
+
+main > .panel:nth-of-type(2) label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #444444;
+    font-size: 14px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+main > .panel:nth-of-type(2) input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: #2563eb;
+    cursor: pointer;
+}
+
+/* =========================
+   RESET PANEL
+   ========================= */
+
+main > .panel:nth-of-type(3) {
+    border-top: 4px solid #292d32;
+}
+
+main > .panel:nth-of-type(3) p {
+    color: #666666;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+/* Reset button */
+main > .panel:nth-of-type(3) button {
+    background: #292d32;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+main > .panel:nth-of-type(3) button:hover {
+    background: #111111;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 650px) {
+
+    main > .panel {
+        padding: 20px;
+    }
+
+    #profileForm {
+        width: 100%;
+    }
+
+    #profileForm input,
+    #profileForm select {
+        padding: 11px;
+    }
+
+    #profileForm button,
+    main > .panel:nth-of-type(3) button {
+        width: 100%;
+    }
+}
+
+
+/* =========================
+   MOBILE ANALYTICS
+========================= */
+
+@media (max-width: 800px) {
+
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .two-col .panel table {
+        min-width: 500px;
+    }
+
+    .two-col .panel:last-child {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .two-col .panel:first-child p {
+        padding: 13px 2px;
+    }
+
+    .two-col .panel:first-child strong {
+        font-size: 15px;
+    }
+}
+
+
+ /* =========================
+    MOBILE
+ ========================= */
+
+ @media (max-width: 800px) {
+
+     #goalList {
+         grid-template-columns: 1fr;
+     }
+ }
+
+
+ @media (max-width: 650px) {
+
+     main > .panel {
+         padding: 18px;
+     }
+
+     #goalList > li {
+         padding: 17px;
+     }
+ }
+
+
+ /* =========================
+    RESPONSIVE SAVINGS
+ ========================= */
+
+ @media (max-width: 900px) {
+
+     .two-col .panel {
+         min-height: auto;
+     }
+ }
+
+
+ @media (max-width: 650px) {
+
+     .panel > button {
+         margin-bottom: 15px;
+     }
+
+     .panel li {
+         font-size: 13px;
+     }
+ }
+
+
+/* =========================
+   MOBILE TRANSACTIONS
+========================= */
+
+@media (max-width: 650px) {
+
+    .filter-row {
+        gap: 7px;
+    }
+
+    .filter-row button {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    #txSearch {
+        max-width: 100%;
+    }
+
+    #txPanels {
+        overflow-x: auto;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 200px;
+    }
+
+    .content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .app {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 18px;
+    }
+
+    .brand {
+        margin-bottom: 18px;
+    }
+
+    .main-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .nav-link {
+        padding: 9px 12px;
+    }
+
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .topbar {
+        padding: 0 18px;
+    }
+
+    .global-search {
+        width: 200px;
+    }
+
+    main {
+        padding: 22px 18px;
+    }
+
+    .page-head {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+}

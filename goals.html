@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allowance — Goals</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="goals">
+
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand">Allowance</a>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="transactions.html" class="nav-link" data-nav="transactions">Transactions</a>
+      <a href="savings.html" class="nav-link" data-nav="savings">Savings</a>
+      <a href="goals.html" class="nav-link" data-nav="goals">Goals</a>
+      <a href="analytics.html" class="nav-link" data-nav="analytics">Analytics</a>
+      <a href="settings.html" class="nav-link" data-nav="settings">Settings</a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <input type="search" placeholder="Search anything…" class="global-search">
+      <span class="current-user" id="currentUserName">Nathan</span>
+    </header>
+
+    <main>
+      <div class="page-head">
+        <div>
+          <h1>Goals</h1>
+          <p>Set and track your savings goals.</p>
+        </div>
+        <button type="button" onclick="newGoalDialog.showModal()">New Goal</button>
+      </div>
+
+      <div class="panel">
+        <ul id="goalList"><li>No goals yet — add one to get started.</li></ul>
+      </div>
+    </main>
+  </div>
+</div>
+
+<dialog id="newGoalDialog">
+  <form method="dialog" id="newGoalForm">
+    <h3>New Goal</h3>
+    <label>Goal name
+      <input type="text" id="goalName" placeholder="e.g. New Headphones" required>
+    </label>
+    <br><br>
+    <label>Target amount
+      <input type="number" min="0" step="1" id="goalTarget" required>
+    </label>
+    <br><br>
+    <label>Due date (optional)
+      <input type="date" id="goalDueDate">
+    </label>
+    <br><br>
+    <button type="button" onclick="newGoalDialog.close()">Cancel</button>
+    <button type="submit">Create Goal</button>
+  </form>
+</dialog>
+
+<dialog id="contributeDialog">
+  <form method="dialog" id="contributeForm">
+    <h3>Add to Goal</h3>
+    <input type="hidden" id="contributeGoalId">
+    <label>Amount
+      <input type="number" min="0" step="1" id="contributeAmount" required>
+    </label>
+    <br><br>
+    <button type="button" onclick="contributeDialog.close()">Cancel</button>
+    <button type="submit">Add</button>
+  </form>
+</dialog>
+
+<script src="assets/app.js"></script>
+<script>
+  let state = loadState();
+
+  function render(){
+    state = loadState();
+    document.getElementById('currentUserName').textContent = state.profile.name;
+    document.getElementById('currentUserName').textContent = state.profile.name;
+    const list = document.getElementById('goalList');
+    if(state.goals.length === 0){
+      list.innerHTML = '<li>No goals yet — add one to get started.</li>';
+      return;
+    }
+    list.innerHTML = state.goals.map(g=>{
+      const pct = g.target ? Math.min(100, Math.round(g.saved / g.target * 100)) : 0;
+      return '<li>' +
+        '<strong>' + g.name + '</strong> — ' + fmt(g.saved, state.profile.currency) + ' / ' + fmt(g.target, state.profile.currency) +
+        ' (' + pct + '%)' + (g.dueDate ? ' — due ' + g.dueDate : '') +
+        ' <button type="button" onclick="openContribute(\'' + g.id + '\')">Add money</button>' +
+        ' <button type="button" onclick="handleDeleteGoal(\'' + g.id + '\')">Delete</button>' +
+        '</li>';
+    }).join('');
+  }
+
+  function openContribute(id){
+    document.getElementById('contributeGoalId').value = id;
+    contributeDialog.showModal();
+  }
+
+  function handleDeleteGoal(id){
+    deleteGoal(id);
+    render();
+  }
+
+  document.getElementById('newGoalForm').addEventListener('submit', ()=>{
+    addGoal({
+      name: document.getElementById('goalName').value,
+      target: Number(document.getElementById('goalTarget').value) || 0,
+      dueDate: document.getElementById('goalDueDate').value || null
+    });
+    document.getElementById('newGoalForm').reset();
+    render();
+  });
+
+  document.getElementById('contributeForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const id = document.getElementById('contributeGoalId').value;
+    const amount = document.getElementById('contributeAmount').value;
+    const result = contributeToGoal(id, amount);
+    if(!result.ok){ alert(result.reason); return; }
+    document.getElementById('contributeForm').reset();
+    contributeDialog.close();
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>

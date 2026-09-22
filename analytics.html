@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allowance — Analytics</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="analytics">
+
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand">Allowance</a>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="transactions.html" class="nav-link" data-nav="transactions">Transactions</a>
+      <a href="savings.html" class="nav-link" data-nav="savings">Savings</a>
+      <a href="goals.html" class="nav-link" data-nav="goals">Goals</a>
+      <a href="analytics.html" class="nav-link" data-nav="analytics">Analytics</a>
+      <a href="settings.html" class="nav-link" data-nav="settings">Settings</a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <input type="search" placeholder="Search anything…" class="global-search">
+      <span class="current-user" id="currentUserName">Nathan</span>
+    </header>
+
+    <main>
+      <div class="page-head">
+        <div>
+          <h1>Analytics</h1>
+          <p>Get insights into your spending habits.</p>
+        </div>
+      </div>
+
+      <section class="two-col">
+        <div class="panel">
+          <h2>Totals (all time)</h2>
+          <p>Allowance set: <strong id="aAllowance">₦0</strong></p>
+          <p>Total spent: <strong id="aSpent">₦0</strong></p>
+          <p>Total income: <strong id="aIncome">₦0</strong></p>
+          <p>Total saved: <strong id="aSaved">₦0</strong></p>
+          <p>Remaining: <strong id="aRemaining">₦0</strong></p>
+        </div>
+
+        <div class="panel">
+          <h2>Spending by Category</h2>
+          <table>
+            <thead><tr><th>Category</th><th>Amount</th><th>% of spending</th></tr></thead>
+            <tbody id="categoryTable"><tr><td colspan="3">No expenses logged yet.</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="panel">
+        <h2>All Transactions by Date</h2>
+        <ul id="byDateList"><li>No transactions yet.</li></ul>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  const state = loadState();
+  document.getElementById('currentUserName').textContent = state.profile.name;
+  const stats = computeStats(state);
+
+  document.getElementById('aAllowance').textContent = fmt(stats.allowance, state.profile.currency);
+  document.getElementById('aSpent').textContent = fmt(stats.spent, state.profile.currency);
+  document.getElementById('aIncome').textContent = fmt(stats.income, state.profile.currency);
+  document.getElementById('aSaved').textContent = fmt(stats.saved, state.profile.currency);
+  document.getElementById('aRemaining').textContent = fmt(stats.remaining, state.profile.currency);
+
+  const catTable = document.getElementById('categoryTable');
+  catTable.innerHTML = stats.categoryList.length
+    ? stats.categoryList.map(c=>'<tr><td>' + c.name + '</td><td>' + fmt(c.amount, state.profile.currency) + '</td><td>' + c.pct + '%</td></tr>').join('')
+    : '<tr><td colspan="3">No expenses logged yet.</td></tr>';
+
+  const grouped = {};
+  state.transactions.forEach(t=>{
+    grouped[t.date] = grouped[t.date] || [];
+    grouped[t.date].push(t);
+  });
+  const dates = Object.keys(grouped).sort().reverse();
+  const byDateList = document.getElementById('byDateList');
+  byDateList.innerHTML = dates.length ? '' : '<li>No transactions yet.</li>';
+  dates.forEach(date=>{
+    const dayTotal = grouped[date].reduce((a,t)=> a + (t.type==='income' ? t.amount : -t.amount), 0);
+    const li = document.createElement('li');
+    li.textContent = formatDate(date) + ' — ' + grouped[date].length + ' transaction(s), net ' + fmt(dayTotal, state.profile.currency);
+    byDateList.appendChild(li);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allowance — Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="dashboard">
+
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand">Allowance</a>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="transactions.html" class="nav-link" data-nav="transactions">Transactions</a>
+      <a href="savings.html" class="nav-link" data-nav="savings">Savings</a>
+      <a href="goals.html" class="nav-link" data-nav="goals">Goals</a>
+      <a href="analytics.html" class="nav-link" data-nav="analytics">Analytics</a>
+      <a href="settings.html" class="nav-link" data-nav="settings">Settings</a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <input type="search" placeholder="Search anything…" class="global-search">
+      <span class="current-user" id="currentUserName">Nathan</span>
+    </header>
+
+    <main>
+      <div class="page-head">
+        <div>
+          <h1 id="greeting">Good morning</h1>
+          <p>Here's your allowance overview.</p>
+        </div>
+        <button type="button" onclick="allowanceDialog.showModal()">Set Allowance</button>
+      </div>
+
+      <section class="stat-grid">
+        <div class="stat-card">
+          <p>Allowance (<span id="periodLabel">Weekly</span>)</p>
+          <p class="stat-amount" id="statAllowance">₦0</p>
+        </div>
+        <div class="stat-card">
+          <p>Spent</p>
+          <p class="stat-amount" id="statSpent">₦0</p>
+        </div>
+        <div class="stat-card">
+          <p>Saved</p>
+          <p class="stat-amount" id="statSaved">₦0</p>
+        </div>
+        <div class="stat-card">
+          <p>Remaining</p>
+          <p class="stat-amount" id="statRemaining">₦0</p>
+        </div>
+      </section>
+
+      <section class="two-col">
+        <div class="panel">
+          <h2>Top Categories</h2>
+          <ul id="categoryList"><li>No expenses logged yet.</li></ul>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Recent Transactions</h2>
+            <button type="button" onclick="addTxDialog.showModal()">Add Transaction</button>
+          </div>
+          <ul id="recentTxList"><li>No transactions yet.</li></ul>
+          <p><a href="transactions.html">View all transactions →</a></p>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ===== Set Allowance dialog ===== -->
+<dialog id="allowanceDialog">
+  <form id="allowanceForm">
+    <h3>Set Allowance</h3>
+    <label>Amount
+      <input type="number" min="0" step="1" id="allowanceAmountInput" required>
+    </label>
+    <br><br>
+    <label>Period
+      <select id="allowancePeriodInput">
+        <option value="Weekly">Weekly</option>
+        <option value="Bi-weekly">Bi-weekly</option>
+        <option value="Monthly">Monthly</option>
+      </select>
+    </label>
+    <br><br>
+    <button type="button" onclick="allowanceDialog.close()">Cancel</button>
+    <button type="submit" id="allowanceSaveBtn">Save</button>
+  </form>
+</dialog>
+
+<!-- ===== Add Transaction dialog (shared pattern used across pages) ===== -->
+<dialog id="addTxDialog">
+  <form method="dialog" id="addTxForm">
+    <h3>Add Transaction</h3>
+    <label>Type
+      <select id="txType" required>
+        <option value="expense">Expense</option>
+        <option value="income">Income</option>
+        <option value="savings">Savings</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+    <br><br>
+    <label>Amount
+      <input type="number" min="0" step="1" id="txAmount" required>
+    </label>
+    <br><br>
+    <label>Category
+      <input type="text" id="txCategory" placeholder="e.g. Food & Drinks" required>
+    </label>
+    <br><br>
+    <label>Description (optional)
+      <input type="text" id="txDescription" placeholder="e.g. Lunch with friends">
+    </label>
+    <br><br>
+    <label>Date
+      <input type="date" id="txDate">
+    </label>
+    <br><br>
+    <button type="button" onclick="addTxDialog.close()">Cancel</button>
+    <button type="submit" id="addTxSaveBtn">Add Transaction</button>
+  </form>
+</dialog>
+
+<script src="assets/app.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  let state = loadState();
+
+  function render(){
+    state = loadState();
+    const stats = computeStats(state);
+    document.getElementById('greeting').textContent = 'Good morning, ' + state.profile.name;
+    document.getElementById('periodLabel').textContent = state.profile.period;
+    document.getElementById('statAllowance').textContent = fmt(stats.allowance, state.profile.currency);
+    document.getElementById('statSpent').textContent = fmt(stats.spent, state.profile.currency);
+    document.getElementById('statSaved').textContent = fmt(stats.saved, state.profile.currency);
+    document.getElementById('statRemaining').textContent = fmt(stats.remaining, state.profile.currency);
+    document.getElementById('currentUserName').textContent = state.profile.name;
+
+    const catList = document.getElementById('categoryList');
+    catList.innerHTML = '';
+    if(stats.categoryList.length === 0){
+      catList.innerHTML = '<li>No expenses logged yet.</li>';
+    }else{
+      stats.categoryList.forEach(c=>{
+        const li = document.createElement('li');
+        li.textContent = c.name + ' — ' + fmt(c.amount, state.profile.currency) + ' (' + c.pct + '%)';
+        catList.appendChild(li);
+      });
+    }
+
+    const txList = document.getElementById('recentTxList');
+    txList.innerHTML = '';
+    const recent = state.transactions.slice(0,5);
+    if(recent.length === 0){
+      txList.innerHTML = '<li>No transactions yet.</li>';
+    }else{
+      recent.forEach(t=>{
+        const li = document.createElement('li');
+        const sign = (t.type === 'income') ? '+' : '-';
+        li.textContent = formatDate(t.date) + ' — ' + (t.description || t.category) + ': ' + sign + fmt(t.amount, state.profile.currency);
+        txList.appendChild(li);
+      });
+    }
+  }
+
+  // --- Allowance Submission Fix ---
+  document.getElementById('allowanceForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    
+    const amount = document.getElementById('allowanceAmountInput').value;
+    const period = document.getElementById('allowancePeriodInput').value;
+    
+    setAllowance(amount, period);
+    
+    document.getElementById('allowanceForm').reset();
+    document.getElementById('allowanceDialog').close();
+    
+    render();
+  });
+
+  // --- Add Transaction Submission Fix ---
+  document.getElementById('addTxForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    
+    addTransaction({
+      type: document.getElementById('txType').value,
+      amount: document.getElementById('txAmount').value,
+      category: document.getElementById('txCategory').value,
+      description: document.getElementById('txDescription').value,
+      date: document.getElementById('txDate').value || todayISO()
+    });
+    
+    document.getElementById('addTxForm').reset();
+    document.getElementById('addTxDialog').close();
+    
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>

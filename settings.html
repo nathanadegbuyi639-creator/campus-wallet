@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allowance — Settings</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="settings">
+
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand">Allowance</a>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="transactions.html" class="nav-link" data-nav="transactions">Transactions</a>
+      <a href="savings.html" class="nav-link" data-nav="savings">Savings</a>
+      <a href="goals.html" class="nav-link" data-nav="goals">Goals</a>
+      <a href="analytics.html" class="nav-link" data-nav="analytics">Analytics</a>
+      <a href="settings.html" class="nav-link" data-nav="settings">Settings</a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <input type="search" placeholder="Search anything…" class="global-search">
+      <span class="current-user" id="currentUserName">Nathan</span>
+    </header>
+
+    <main>
+      <div class="page-head">
+        <div>
+          <h1>Settings</h1>
+          <p>Manage your account and preferences.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Profile</h2>
+        <form id="profileForm">
+          <label>Full name <input type="text" id="profileName"></label><br><br>
+          <label>Email <input type="email" id="profileEmail"></label><br><br>
+          <label>Currency symbol
+            <select id="profileCurrency">
+              <option value="₦">₦ (NGN - Nigerian Naira)</option>
+              <option value="$">$ (USD - US Dollar)</option>
+              <option value="€">€ (EUR - Euro)</option>
+              <option value="£">£ (GBP - British Pound)</option>
+              <option value="¥">¥ (JPY/CNY - Yen / Yuan)</option>
+              <option value="₹">₹ (INR - Indian Rupee)</option>
+              <option value="R">R (ZAR - South African Rand)</option>
+              <option value="₵">₵ (GHS - Ghanaian Cedi)</option>
+              <option value="KSh">KSh (KES - Kenyan Shilling)</option>
+              <option value="CA$">CA$ (CAD - Canadian Dollar)</option>
+              <option value="AU$">AU$ (AUD - Australian Dollar)</option>
+            </select>
+          </label><br><br>
+          <label>Allowance period
+            <select id="profilePeriod">
+              <option value="Weekly">Weekly</option>
+              <option value="Bi-weekly">Bi-weekly</option>
+              <option value="Monthly">Monthly</option>
+            </select>
+          </label><br><br>
+          <button type="submit">Save Profile</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Notifications</h2>
+        <label><input type="checkbox" id="notifCheckin"> Daily check-in reminders</label><br>
+        <label><input type="checkbox" id="notifSummary"> Weekly summary</label><br>
+        <script src="assets/app.js"></script>
+<script>
+  function fill(){
+    const state = loadState();
+    document.getElementById('currentUserName').textContent = state.profile.name;
+    document.getElementById('profileName').value = state.profile.name;
+    document.getElementById('profileEmail').value = state.profile.email;
+    document.getElementById('profileCurrency').value = state.profile.currency || '₦';
+    document.getElementById('profilePeriod').value = state.profile.period;
+    document.getElementById('notifCheckin').checked = state.profile.notifications.dailyCheckin;
+    document.getElementById('notifSummary').checked = state.profile.notifications.weeklySummary;
+    document.getElementById('notifGoals').checked = state.profile.notifications.goalMilestones;
+  }
+
+  document.getElementById('profileForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    updateProfile({
+      name: document.getElementById('profileName').value,
+      email: document.getElementById('profileEmail').value,
+      currency: document.getElementById('profileCurrency').value || '₦',
+      period: document.getElementById('profilePeriod').value
+    });
+    fill();
+    alert('Profile saved.');
+  });
+
+  ['notifCheckin','notifSummary','notifGoals'].forEach(id=>{
+    document.getElementById(id).addEventListener('change', (e)=>{
+      const map = { notifCheckin:'dailyCheckin', notifSummary:'weeklySummary', notifGoals:'goalMilestones' };
+      updateNotification(map[id], e.target.checked);
+    });
+  });
+
+  function handleReset(){
+    if(confirm('This will permanently delete all saved data on this device. Continue?')){
+      resetState();
+      fill();
+      alert('All data has been reset.');
+    }
+  
+    fill();
+    alert('Profile saved.');
+  };
+
+  ['notifCheckin','notifSummary','notifGoals'].forEach(id=>{
+    document.getElementById(id).addEventListener('change', (e)=>{
+      const map = { notifCheckin:'dailyCheckin', notifSummary:'weeklySummary', notifGoals:'goalMilestones' };
+      updateNotification(map[id], e.target.checked);
+    });
+  });
+
+  function handleReset(){
+    if(confirm('This will permanently delete all saved data on this device. Continue?')){
+      resetState();
+      fill();
+      alert('All data has been reset.');
+    }
+  }
+
+  fill();
+</script>
+</body>
+</html>

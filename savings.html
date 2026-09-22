@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allowance — Savings</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="savings">
+
+<div class="app">
+  <aside class="sidebar">
+    <a href="index.html" class="brand">Allowance</a>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link" data-nav="dashboard">Dashboard</a>
+      <a href="transactions.html" class="nav-link" data-nav="transactions">Transactions</a>
+      <a href="savings.html" class="nav-link" data-nav="savings">Savings</a>
+      <a href="goals.html" class="nav-link" data-nav="goals">Goals</a>
+      <a href="analytics.html" class="nav-link" data-nav="analytics">Analytics</a>
+      <a href="settings.html" class="nav-link" data-nav="settings">Settings</a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <input type="search" placeholder="Search anything…" class="global-search">
+      <span class="current-user" id="currentUserName">Nathan</span>
+    </header>
+
+    <main>
+      <div class="page-head">
+        <div>
+          <h1>Savings</h1>
+          <p>General Savings is locked until a date you set. Emergency Savings is free to withdraw anytime.</p>
+        </div>
+      </div>
+
+      <section class="two-col">
+
+        <!-- GENERAL SAVINGS -->
+        <div class="panel">
+          <h2>General Savings <small>(fixed)</small></h2>
+          <p>Balance: <strong id="generalBalance">₦0</strong></p>
+          <p id="generalLockStatus">No lock date set yet.</p>
+
+          <button type="button" onclick="generalDepositDialog.showModal()">Deposit</button>
+          <button type="button" onclick="generalWithdrawDialog.showModal()">Withdraw</button>
+
+          <h3>History</h3>
+          <ul id="generalHistory"><li>No activity yet.</li></ul>
+        </div>
+
+        <!-- EMERGENCY SAVINGS -->
+        <div class="panel">
+          <h2>Emergency Savings <small>(flexible)</small></h2>
+          <p>Balance: <strong id="emergencyBalance">₦0</strong></p>
+          <p>Withdraw anytime — no lock date.</p>
+
+          <button type="button" onclick="emergencyDepositDialog.showModal()">Deposit</button>
+          <button type="button" onclick="emergencyWithdrawDialog.showModal()">Withdraw</button>
+
+          <h3>History</h3>
+          <ul id="emergencyHistory"><li>No activity yet.</li></ul>
+        </div>
+
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ===== General Savings: Deposit ===== -->
+<dialog id="generalDepositDialog">
+  <form method="dialog" id="generalDepositForm">
+    <h3>Deposit to General Savings</h3>
+    <label>Amount
+      <input type="number" min="0" step="1" id="generalDepositAmount" required>
+    </label>
+    <br><br>
+    <label>Lock until (optional — only needed the first time, or to change it)
+      <input type="date" id="generalLockDateInput">
+    </label>
+    <br><br>
+    <button type="button" onclick="generalDepositDialog.close()">Cancel</button>
+    <button type="submit">Deposit</button>
+  </form>
+</dialog>
+
+<!-- ===== General Savings: Withdraw ===== -->
+<dialog id="generalWithdrawDialog">
+  <form method="dialog" id="generalWithdrawForm">
+    <h3>Withdraw from General Savings</h3>
+    <p id="generalWithdrawError" style="display:none;"></p>
+    <label>Amount
+      <input type="number" min="0" step="1" id="generalWithdrawAmount" required>
+    </label>
+    <br><br>
+    <button type="button" onclick="generalWithdrawDialog.close()">Cancel</button>
+    <button type="submit">Withdraw</button>
+  </form>
+</dialog>
+
+<!-- ===== Emergency Savings: Deposit ===== -->
+<dialog id="emergencyDepositDialog">
+  <form method="dialog" id="emergencyDepositForm">
+    <h3>Deposit to Emergency Savings</h3>
+    <label>Amount
+      <input type="number" min="0" step="1" id="emergencyDepositAmount" required>
+    </label>
+    <br><br>
+    <button type="button" onclick="emergencyDepositDialog.close()">Cancel</button>
+    <button type="submit">Deposit</button>
+  </form>
+</dialog>
+
+<!-- ===== Emergency Savings: Withdraw ===== -->
+<dialog id="emergencyWithdrawDialog">
+  <form method="dialog" id="emergencyWithdrawForm">
+    <h3>Withdraw from Emergency Savings</h3>
+    <p id="emergencyWithdrawError" style="display:none;"></p>
+    <label>Amount
+      <input type="number" min="0" step="1" id="emergencyWithdrawAmount" required>
+    </label>
+    <br><br>
+    <button type="button" onclick="emergencyWithdrawDialog.close()">Cancel</button>
+    <button type="submit">Withdraw</button>
+  </form>
+</dialog>
+
+<script src="assets/app.js"></script>
+<script>
+  let state = loadState();
+
+  function historyHtml(entry){
+    const sign = entry.type === 'deposit' ? '+' : '-';
+    return '<li>' + formatDate(entry.date) + ' — ' + entry.type + ': ' + sign + fmt(entry.amount, state.profile.currency) + '</li>';
+  }
+
+  function render(){
+    state = loadState();
+    document.getElementById('currentUserName').textContent = state.profile.name;
+
+    const general = state.savings.general;
+    document.getElementById('generalBalance').textContent = fmt(general.balance, state.profile.currency);
+    document.getElementById('generalLockStatus').textContent = general.lockDate
+      ? (todayISO() < general.lockDate
+          ? 'Locked until ' + general.lockDate + '.'
+          : 'Unlocked since ' + general.lockDate + ' — you can withdraw.')
+      : 'No lock date set yet — add one on your next deposit.';
+    document.getElementById('generalHistory').innerHTML = general.history.length
+      ? general.history.map(historyHtml).join('')
+      : '<li>No activity yet.</li>';
+      document.getElementById('currentUserName').textContent = state.profile.name;
+    const emergency = state.savings.emergency;
+    document.getElementById('emergencyBalance').textContent = fmt(emergency.balance, state.profile.currency);
+    document.getElementById('emergencyHistory').innerHTML = emergency.history.length
+      ? emergency.history.map(historyHtml).join('')
+      : '<li>No activity yet.</li>';
+  }
+
+  document.getElementById('generalDepositForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const amount = document.getElementById('generalDepositAmount').value;
+    const lockDate = document.getElementById('generalLockDateInput').value;
+    const result = depositSavings('general', amount, lockDate ? { lockDate } : undefined);
+    if(!result.ok){ alert(result.reason); return; }
+    document.getElementById('generalDepositForm').reset();
+    generalDepositDialog.close();
+    render();
+  });
+
+  document.getElementById('generalWithdrawForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const amount = document.getElementById('generalWithdrawAmount').value;
+    const result = withdrawSavings('general', amount);
+    const errorEl = document.getElementById('generalWithdrawError');
+    if(!result.ok){
+      errorEl.textContent = result.reason;
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+    document.getElementById('generalWithdrawForm').reset();
+    generalWithdrawDialog.close();
+    render();
+  });
+
+  document.getElementById('emergencyDepositForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const amount = document.getElementById('emergencyDepositAmount').value;
+    const result = depositSavings('emergency', amount);
+    if(!result.ok){ alert(result.reason); return; }
+    document.getElementById('emergencyDepositForm').reset();
+    emergencyDepositDialog.close();
+    render();
+  });
+
+  document.getElementById('emergencyWithdrawForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const amount = document.getElementById('emergencyWithdrawAmount').value;
+    const result = withdrawSavings('emergency', amount);
+    const errorEl = document.getElementById('emergencyWithdrawError');
+    if(!result.ok){
+      errorEl.textContent = result.reason;
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+    document.getElementById('emergencyWithdrawForm').reset();
+    emergencyWithdrawDialog.close();
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
