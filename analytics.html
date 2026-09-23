@@ -40,7 +40,6 @@
           <h2>Totals (all time)</h2>
           <p>Allowance set: <strong id="aAllowance">₦0</strong></p>
           <p>Total spent: <strong id="aSpent">₦0</strong></p>
-          <p>Total income: <strong id="aIncome">₦0</strong></p>
           <p>Total saved: <strong id="aSaved">₦0</strong></p>
           <p>Remaining: <strong id="aRemaining">₦0</strong></p>
         </div>
@@ -71,7 +70,6 @@
 
   document.getElementById('aAllowance').textContent = fmt(stats.allowance, state.profile.currency);
   document.getElementById('aSpent').textContent = fmt(stats.spent, state.profile.currency);
-  document.getElementById('aIncome').textContent = fmt(stats.income, state.profile.currency);
   document.getElementById('aSaved').textContent = fmt(stats.saved, state.profile.currency);
   document.getElementById('aRemaining').textContent = fmt(stats.remaining, state.profile.currency);
 
@@ -89,7 +87,7 @@
   const byDateList = document.getElementById('byDateList');
   byDateList.innerHTML = dates.length ? '' : '<li>No transactions yet.</li>';
   dates.forEach(date=>{
-    const dayTotal = grouped[date].reduce((a,t)=> a + (t.type==='income' ? t.amount : -t.amount), 0);
+    const dayTotal = grouped[date].reduce((a,t)=> a - Number(t.amount), 0);
     const li = document.createElement('li');
     li.textContent = formatDate(date) + ' — ' + grouped[date].length + ' transaction(s), net ' + fmt(dayTotal, state.profile.currency);
     byDateList.appendChild(li);

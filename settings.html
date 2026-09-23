@@ -36,6 +36,24 @@
       </div>
 
       <div class="panel">
+        <h2>Allowance</h2>
+        <p>This is your fixed allowance amount. Update it here whenever it changes.</p>
+        <form id="allowanceForm">
+          <label>Amount
+            <input type="number" min="0" step="1" id="allowanceAmountInput" required>
+          </label><br><br>
+          <label>Period
+            <select id="allowancePeriodInput">
+              <option value="Weekly">Weekly</option>
+              <option value="Bi-weekly">Bi-weekly</option>
+              <option value="Monthly">Monthly</option>
+            </select>
+          </label><br><br>
+          <button type="submit">Save Allowance</button>
+        </form>
+      </div>
+
+      <div class="panel">
         <h2>Profile</h2>
         <form id="profileForm">
           <label>Full name <input type="text" id="profileName"></label><br><br>
@@ -55,13 +73,6 @@
               <option value="AU$">AU$ (AUD - Australian Dollar)</option>
             </select>
           </label><br><br>
-          <label>Allowance period
-            <select id="profilePeriod">
-              <option value="Weekly">Weekly</option>
-              <option value="Bi-weekly">Bi-weekly</option>
-              <option value="Monthly">Monthly</option>
-            </select>
-          </label><br><br>
           <button type="submit">Save Profile</button>
         </form>
       </div>
@@ -70,49 +81,52 @@
         <h2>Notifications</h2>
         <label><input type="checkbox" id="notifCheckin"> Daily check-in reminders</label><br>
         <label><input type="checkbox" id="notifSummary"> Weekly summary</label><br>
-        <script src="assets/app.js"></script>
+        <label><input type="checkbox" id="notifGoals"> Goal milestones</label><br>
+      </div>
+
+      <div class="panel">
+        <h2>Reset</h2>
+        <p>This clears all locally-stored data (allowance, transactions, savings, goals).</p>
+        <button type="button" onclick="handleReset()">Reset All Data</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
 <script>
   function fill(){
     const state = loadState();
     document.getElementById('currentUserName').textContent = state.profile.name;
+    document.getElementById('allowanceAmountInput').value = state.allowance.amount;
+    document.getElementById('allowancePeriodInput').value = state.profile.period;
     document.getElementById('profileName').value = state.profile.name;
     document.getElementById('profileEmail').value = state.profile.email;
     document.getElementById('profileCurrency').value = state.profile.currency || '₦';
-    document.getElementById('profilePeriod').value = state.profile.period;
     document.getElementById('notifCheckin').checked = state.profile.notifications.dailyCheckin;
     document.getElementById('notifSummary').checked = state.profile.notifications.weeklySummary;
     document.getElementById('notifGoals').checked = state.profile.notifications.goalMilestones;
   }
+
+  document.getElementById('allowanceForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const amount = document.getElementById('allowanceAmountInput').value;
+    const period = document.getElementById('allowancePeriodInput').value;
+    setAllowance(amount, period);
+    fill();
+    alert('Allowance saved.');
+  });
 
   document.getElementById('profileForm').addEventListener('submit', (e)=>{
     e.preventDefault();
     updateProfile({
       name: document.getElementById('profileName').value,
       email: document.getElementById('profileEmail').value,
-      currency: document.getElementById('profileCurrency').value || '₦',
-      period: document.getElementById('profilePeriod').value
+      currency: document.getElementById('profileCurrency').value || '₦'
     });
     fill();
     alert('Profile saved.');
   });
-
-  ['notifCheckin','notifSummary','notifGoals'].forEach(id=>{
-    document.getElementById(id).addEventListener('change', (e)=>{
-      const map = { notifCheckin:'dailyCheckin', notifSummary:'weeklySummary', notifGoals:'goalMilestones' };
-      updateNotification(map[id], e.target.checked);
-    });
-  });
-
-  function handleReset(){
-    if(confirm('This will permanently delete all saved data on this device. Continue?')){
-      resetState();
-      fill();
-      alert('All data has been reset.');
-    }
-  
-    fill();
-    alert('Profile saved.');
-  };
 
   ['notifCheckin','notifSummary','notifGoals'].forEach(id=>{
     document.getElementById(id).addEventListener('change', (e)=>{

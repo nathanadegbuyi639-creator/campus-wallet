@@ -39,7 +39,6 @@
       <div class="filter-row" data-tab-group data-controls="#txPanels">
         <button type="button" data-tab="all" class="active">All</button>
         <button type="button" data-tab="expense">Expenses</button>
-        <button type="button" data-tab="income">Income</button>
         <button type="button" data-tab="savings">Savings</button>
         <button type="button" data-tab="other">Other</button>
       </div>
@@ -54,7 +53,6 @@
           </table>
         </div>
         <div data-panel="expense" hidden><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="txTableExpense"></tbody></table></div>
-        <div data-panel="income" hidden><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="txTableIncome"></tbody></table></div>
         <div data-panel="savings" hidden><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="txTableSavings"></tbody></table></div>
         <div data-panel="other" hidden><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="txTableOther"></tbody></table></div>
       </div>
@@ -68,7 +66,6 @@
     <label>Type
       <select id="txType" required>
         <option value="expense">Expense</option>
-        <option value="income">Income</option>
         <option value="savings">Savings</option>
         <option value="other">Other</option>
       </select>
@@ -101,13 +98,13 @@
   let state = loadState();
 
   function rowHtml(t, showType){
-    const sign = (t.type === 'income') ? '+' : '-';
+    const sign = (t.amount < 0) ? '+' : '-';
     return '<tr data-id="' + t.id + '">' +
       '<td>' + formatDate(t.date) + '</td>' +
       '<td>' + (t.description || '—') + '</td>' +
       '<td>' + t.category + '</td>' +
       (showType ? '<td>' + t.type + '</td>' : '') +
-      '<td>' + sign + fmt(t.amount, state.profile.currency) + '</td>' +
+      '<td>' + sign + fmt(Math.abs(t.amount), state.profile.currency) + '</td>' +
       '<td><button type="button" onclick="handleDelete(\'' + t.id + '\')">Delete</button></td>' +
       '</tr>';
   }
@@ -124,7 +121,7 @@
       ? filtered.map(t=>rowHtml(t, true)).join('')
       : '<tr><td colspan="6">No transactions found.</td></tr>';
     document.getElementById('currentUserName').textContent = state.profile.name;
-    ['expense','income','savings','other'].forEach(type=>{
+    ['expense','savings','other'].forEach(type=>{
       const rows = filtered.filter(t=>t.type===type);
       document.getElementById('txTable' + type.charAt(0).toUpperCase() + type.slice(1)).innerHTML = rows.length
         ? rows.map(t=>rowHtml(t,false)).join('')

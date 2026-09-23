@@ -30,10 +30,9 @@
     <main>
       <div class="page-head">
         <div>
-          <h1 id="greeting">Good Day.</h1>
+          <h1 id="greeting">Good morning</h1>
           <p>Here's your allowance overview.</p>
         </div>
-        <button type="button" onclick="allowanceDialog.showModal()">Set Allowance</button>
       </div>
 
       <section class="stat-grid">
@@ -74,27 +73,6 @@
   </div>
 </div>
 
-<!-- ===== Set Allowance dialog ===== -->
-<dialog id="allowanceDialog">
-  <form id="allowanceForm">
-    <h3>Set Allowance</h3>
-    <label>Amount
-      <input type="number" min="0" step="1" id="allowanceAmountInput" required>
-    </label>
-    <br><br>
-    <label>Period
-      <select id="allowancePeriodInput">
-        <option value="Weekly">Weekly</option>
-        <option value="Bi-weekly">Bi-weekly</option>
-        <option value="Monthly">Monthly</option>
-      </select>
-    </label>
-    <br><br>
-    <button type="button" onclick="allowanceDialog.close()">Cancel</button>
-    <button type="submit" id="allowanceSaveBtn">Save</button>
-  </form>
-</dialog>
-
 <!-- ===== Add Transaction dialog (shared pattern used across pages) ===== -->
 <dialog id="addTxDialog">
   <form method="dialog" id="addTxForm">
@@ -102,7 +80,6 @@
     <label>Type
       <select id="txType" required>
         <option value="expense">Expense</option>
-        <option value="income">Income</option>
         <option value="savings">Savings</option>
         <option value="other">Other</option>
       </select>
@@ -165,27 +142,12 @@
     }else{
       recent.forEach(t=>{
         const li = document.createElement('li');
-        const sign = (t.type === 'income') ? '+' : '-';
-        li.textContent = formatDate(t.date) + ' — ' + (t.description || t.category) + ': ' + sign + fmt(t.amount, state.profile.currency);
+        const sign = (t.amount < 0) ? '+' : '-';
+        li.textContent = formatDate(t.date) + ' — ' + (t.description || t.category) + ': ' + sign + fmt(Math.abs(t.amount), state.profile.currency);
         txList.appendChild(li);
       });
     }
   }
-
-  // --- Allowance Submission Fix ---
-  document.getElementById('allowanceForm').addEventListener('submit', (e)=>{
-    e.preventDefault();
-    
-    const amount = document.getElementById('allowanceAmountInput').value;
-    const period = document.getElementById('allowancePeriodInput').value;
-    
-    setAllowance(amount, period);
-    
-    document.getElementById('allowanceForm').reset();
-    document.getElementById('allowanceDialog').close();
-    
-    render();
-  });
 
   // --- Add Transaction Submission Fix ---
   document.getElementById('addTxForm').addEventListener('submit', (e)=>{
